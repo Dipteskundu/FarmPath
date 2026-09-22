@@ -4,16 +4,16 @@ import {
   Users,
   ShieldCheck,
   Sprout,
-  AlertTriangle,
+  
   TrendingUp,
   MapPin,
-  ArrowRight,
+  
   Activity,
   CheckCircle2,
   FileCheck,
   Send,
-  Database,
-  Layers,
+  
+  
   Store,
   ShoppingCart,
   CreditCard,

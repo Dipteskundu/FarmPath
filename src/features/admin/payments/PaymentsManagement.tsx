@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { tr } from "@/lib/localize";
 import {
-  CreditCard,
+  
   Search,
-  Filter,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
+  
+  
+  
+  
   Check,
-  DollarSign,
-  ArrowUpRight,
-  ShieldCheck,
+  
+  
+  
   Download,
 } from '@/components/icons';
-import { Card, CardHeader } from '@/components/ui/Card';
+import {  } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -29,11 +29,7 @@ export const PaymentsManagement: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [approvingId, setApprovingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadPayments();
-  }, []);
-
-  const loadPayments = async () => {
+  const loadPayments = useCallback(async () => {
     try {
       setLoading(true);
       const res = await getPaymentRecordsAdmin();
@@ -45,7 +41,12 @@ export const PaymentsManagement: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => void loadPayments(), 0);
+    return () => window.clearTimeout(timer);
+  }, [loadPayments]);
 
   const handleApprove = async (id: string) => {
     try {

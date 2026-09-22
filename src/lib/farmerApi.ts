@@ -153,6 +153,7 @@ export async function createField(
 export async function getCropRecommendations(
   _input?: CropRecommendationInput
 ): Promise<ApiResponse<CropRecommendationItem[]>> {
+  void _input;
   return simulateApiCall(initialRecommendations, 300);
 }
 

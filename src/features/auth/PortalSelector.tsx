@@ -60,7 +60,7 @@ const PORTAL_CONFIG: Record<
 };
 
 export const PortalSelector: React.FC = () => {
-  const { user, availablePortals, selectPortal, getPortalLabel, logout, isLoading } = useAuth();
+  const { user, availablePortals, selectPortal, logout, isLoading } = useAuth();
   const { language } = useLanguage();
   const router = useRouter();
 

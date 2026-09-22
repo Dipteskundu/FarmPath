@@ -20,6 +20,7 @@ import {
   AgronomicAdvisory,
   MarketCommodityPrice,
   SystemAuditLog,
+  WeatherData,
   AdminDashboardSummary,
   ApiResponse,
 } from '@/types';
@@ -38,15 +39,15 @@ import {
   initialDisputes,
 } from '@/lib/data/adminData';
 
-let adminKpiState = { ...initialAdminKpiMetrics };
+const adminKpiState = { ...initialAdminKpiMetrics };
 let adminUsersState = [...initialAdminUsers];
 let marketplaceListingsState = [...initialMarketplaceAdminListings];
-let orderAuditsState = [...initialOrderAudits];
+const orderAuditsState = [...initialOrderAudits];
 let paymentRecordsState = [...initialPaymentRecords];
-let qualityReportsState = [...initialQualityReports];
-let logisticsFleetState = [...initialLogisticsFleet];
+const qualityReportsState = [...initialQualityReports];
+const logisticsFleetState = [...initialLogisticsFleet];
 let adminTrainingState = [...initialAdminTrainingManagement];
-let agritechReportsState = [...initialAgritechReports];
+const agritechReportsState = [...initialAgritechReports];
 let disputesState = [...initialDisputes];
 
 // 1. Admin Dashboard
@@ -446,7 +447,7 @@ let marketPricesState: MarketCommodityPrice[] = [
   },
 ];
 
-let systemAuditLogsState: SystemAuditLog[] = [
+const systemAuditLogsState: SystemAuditLog[] = [
   {
     id: 'AUD-901',
     timestamp: '2026-03-17 14:32:10 BST',
@@ -596,8 +597,9 @@ export async function getSystemAuditLogs(): Promise<ApiResponse<SystemAuditLog[]
 }
 
 export async function broadcastWeatherAlert(
-  alert: any
+  _alert: WeatherData['microclimateAlerts'][number]
 ): Promise<ApiResponse<boolean>> {
+  void _alert;
   return simulateApiCall(true, 200);
 }
 

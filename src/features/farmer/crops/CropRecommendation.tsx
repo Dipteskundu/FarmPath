@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { tr } from "@/lib/localize";
 import {
   Sparkles,
-  TrendingUp,
-  Droplets,
+  
+  
   CheckCircle2,
-  Calendar,
-  Layers,
-  ArrowRight,
-  Filter,
+  
+  
+  
+  
 } from '@/components/icons';
 import { Card, CardHeader } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
+import {  } from '@/components/ui/';
 import { Button } from '@/components/ui/Button';
 import { FormInput, FormSelect } from '@/components/ui/FormInput';
-import { Skeleton } from '@/components/ui/Skeleton';
+import {  } from '@/components/ui/';
 import { useToast } from '@/components/ui/Toast';
 import { getCropRecommendations } from '@/lib/farmerApi';
 import { CropRecommendationItem, CropRecommendationInput } from '@/types';
@@ -41,11 +41,12 @@ export const CropRecommendation: React.FC<CropRecommendationProps> = ({ onNaviga
     season: 'Rabi (Winter)',
     targetLandSizeAcres: 4.2,
   });
+  const initialInput = useRef(inputForm);
 
-  const loadRecommendations = async () => {
+  const loadRecommendations = useCallback(async (input: CropRecommendationInput) => {
     try {
       setLoading(true);
-      const res = await getCropRecommendations(inputForm);
+      const res = await getCropRecommendations(input);
       if (res.success) {
         setRecommendations(res.data);
       }
@@ -54,15 +55,16 @@ export const CropRecommendation: React.FC<CropRecommendationProps> = ({ onNaviga
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   useEffect(() => {
-    loadRecommendations();
-  }, []);
+    const timer = window.setTimeout(() => void loadRecommendations(initialInput.current), 0);
+    return () => window.clearTimeout(timer);
+  }, [loadRecommendations]);
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    loadRecommendations();
+    void loadRecommendations(inputForm);
     showToast('success', tr('Recommendation generated based on soil chemistry'));
   };
 

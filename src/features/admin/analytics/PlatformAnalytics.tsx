@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { tr } from "@/lib/localize";
 import {
   TrendingUp,
-  PieChart,
-  BarChart2,
+  
+  
   Users,
   Sprout,
   Activity,
-  Layers,
-  ArrowUpRight,
-  ShieldCheck,
+  
+  
+  
 } from '@/components/icons';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { MetricCard } from '@/components/ui/MetricCard';

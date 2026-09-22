@@ -3,11 +3,11 @@ import { tr } from "@/lib/localize";
 import {
   Send,
   AlertTriangle,
-  Radio,
-  MapPin,
+  
+  
   Clock,
-  ShieldAlert,
-  CheckCircle2,
+  
+  
   Trash2,
 } from '@/components/icons';
 import { Card, CardHeader } from '@/components/ui/Card';

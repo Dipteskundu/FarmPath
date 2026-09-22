@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { tr } from "@/lib/localize";
 import {
-  Scale,
+  
   Search,
-  Filter,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  FileText,
-  Clock,
-  ArrowRight,
+  
+  
+  
+  
+  
+  
+  
   Gavel,
-  ShieldAlert,
+  
 } from '@/components/icons';
-import { Card, CardHeader } from '@/components/ui/Card';
+import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -33,11 +33,7 @@ export const DisputesManagement: React.FC = () => {
   const [resolutionNotes, setResolutionNotes] = useState('');
   const [resolving, setResolving] = useState(false);
 
-  useEffect(() => {
-    loadDisputes();
-  }, []);
-
-  const loadDisputes = async () => {
+  const loadDisputes = useCallback(async () => {
     try {
       setLoading(true);
       const res = await getDisputesAdmin();
@@ -49,7 +45,12 @@ export const DisputesManagement: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => void loadDisputes(), 0);
+    return () => window.clearTimeout(timer);
+  }, [loadDisputes]);
 
   const handleResolve = async (newStatus: DisputeCaseAdminView['caseStatus']) => {
     if (!selectedCase) return;

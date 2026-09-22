@@ -8,7 +8,7 @@ import { setToken, getToken, removeToken } from '@/lib/api';
 import { auth, googleProvider, githubProvider } from '@/lib/firebase';
 import {
   signInWithPopup,
-  onAuthStateChanged,
+  
   signOut as firebaseSignOut,
   type User as FirebaseUser,
 } from 'firebase/auth';
@@ -91,15 +91,6 @@ function getPortalsForRoles(roles: string[]): PortalType[] {
     if (portal) portals.add(portal);
   });
   return Array.from(portals);
-}
-
-function makeInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
 }
 
 async function syncSocialUser(firebaseUser: FirebaseUser): Promise<{ token: string; user: AuthUser }> {

@@ -83,7 +83,8 @@ export const AgriPortalShell: React.FC<AgriPortalShellProps> = ({ children }) =>
   }, []);
 
   useEffect(() => {
-    loadNotifications();
+    const timer = window.setTimeout(() => void loadNotifications(), 0);
+    return () => window.clearTimeout(timer);
   }, [loadNotifications, pathname]);
 
   const handleLogout = useCallback(() => {

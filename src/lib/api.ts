@@ -1,3 +1,5 @@
+import { getErrorDetails, getResponseErrorMessage } from "@/lib/errors";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 const TOKEN_KEY = "farmPath_token";
@@ -15,7 +17,7 @@ export function removeToken(): void {
   localStorage.removeItem(TOKEN_KEY);
 }
 
-async function request(path: string, options: RequestInit = {}) {
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -35,7 +37,7 @@ async function request(path: string, options: RequestInit = {}) {
     if (res.status === 401) {
       removeToken();
       if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
-        window.location.href = "/login";
+        window.location.assign(new URL("/login", window.location.origin));
       }
       throw new Error("Session expired. Please log in again.");
     }
@@ -44,16 +46,16 @@ async function request(path: string, options: RequestInit = {}) {
       throw new Error("You do not have permission to perform this action.");
     }
 
-    const data = await res.json();
+    const data: unknown = await res.json();
 
     if (!res.ok) {
-      const message = data.message || data.errors?.[0]?.message || "Request failed";
-      throw new Error(message);
+      throw new Error(getResponseErrorMessage(data, "Request failed"));
     }
 
-    return data;
-  } catch (err: any) {
-    if (err.name === "TypeError" && err.message === "Failed to fetch") {
+    return data as T;
+  } catch (err: unknown) {
+    const { message } = getErrorDetails(err);
+    if (err instanceof TypeError && message === "Failed to fetch") {
       throw new Error("Backend server is not running. Please start the server on port 5000.");
     }
     throw err;
@@ -65,29 +67,29 @@ export function authHeaders(token: string) {
 }
 
 export const api = {
-  post: (path: string, body: any) =>
-    request(path, {
+  post: <T>(path: string, body: unknown) =>
+    request<T>(path, {
       method: "POST",
       body: JSON.stringify(body),
     }),
 
-  get: (path: string) =>
-    request(path, { method: "GET" }),
+  get: <T>(path: string) =>
+    request<T>(path, { method: "GET" }),
 
-  put: (path: string, body: any) =>
-    request(path, {
+  put: <T>(path: string, body: unknown) =>
+    request<T>(path, {
       method: "PUT",
       body: JSON.stringify(body),
     }),
 
-  patch: (path: string, body: any) =>
-    request(path, {
+  patch: <T>(path: string, body: unknown) =>
+    request<T>(path, {
       method: "PATCH",
       body: JSON.stringify(body),
     }),
 
-  delete: (path: string) =>
-    request(path, { method: "DELETE" }),
+  delete: <T>(path: string) =>
+    request<T>(path, { method: "DELETE" }),
 };
 
 export async function uploadFile(path: string, file: File) {
@@ -100,11 +102,12 @@ export async function uploadFile(path: string, file: File) {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: formData,
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Upload failed");
+    const data: unknown = await res.json();
+    if (!res.ok) throw new Error(getResponseErrorMessage(data, "Upload failed"));
     return data;
-  } catch (err: any) {
-    if (err.name === "TypeError" && err.message === "Failed to fetch") {
+  } catch (err: unknown) {
+    const { message } = getErrorDetails(err);
+    if (err instanceof TypeError && message === "Failed to fetch") {
       throw new Error("Backend server is not running. Please start the server on port 5000.");
     }
     throw err;

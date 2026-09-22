@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { tr } from "@/lib/localize";
 import { useLanguage } from '@/contexts/LanguageContext';
 import {
-  GraduationCap,
+  
   PlayCircle,
   CheckCircle,
   Clock,
   Star,
   Award,
   BookOpen,
-  Filter,
+  
   UserCheck,
 } from '@/components/icons';
-import { Card, CardHeader } from '@/components/ui/Card';
+import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';

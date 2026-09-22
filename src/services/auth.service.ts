@@ -21,15 +21,15 @@ export interface RegisterInput {
 }
 
 export async function apiLogin(email: string, password: string): Promise<LoginResponse> {
-  return api.post("/auth/login", { email, password });
+  return api.post<LoginResponse>("/auth/login", { email, password });
 }
 
 export async function apiRegister(data: RegisterInput): Promise<LoginResponse> {
-  return api.post("/auth/register", data);
+  return api.post<LoginResponse>("/auth/register", data);
 }
 
 export async function apiGetMe(): Promise<AuthUser> {
-  return api.get("/auth/me");
+  return api.get<AuthUser>("/auth/me");
 }
 
 export async function apiSocialAuth(data: {
@@ -40,5 +40,5 @@ export async function apiSocialAuth(data: {
   role?: string;
   avatarUrl?: string;
 }): Promise<LoginResponse> {
-  return api.post("/auth/social", data);
+  return api.post<LoginResponse>("/auth/social", data);
 }

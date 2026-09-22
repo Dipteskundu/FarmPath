@@ -4,7 +4,7 @@ import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { getActiveKey, ROUTE_MAP } from '@/features/layout/navConfig';
+import { ROUTE_MAP } from '@/features/layout/navConfig';
 import { PortalType } from '@/types';
 
 export function RouteGuard({ children }: { children: React.ReactNode }) {

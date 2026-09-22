@@ -13,6 +13,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { PublicNavbar } from '@/components/public/PublicNavbar';
 import Link from 'next/link';
+import { getErrorDetails, getErrorMessage } from '@/lib/errors';
 
 export const AuthScreen: React.FC = () => {
   const { showToast } = useToast();
@@ -31,8 +32,8 @@ export const AuthScreen: React.FC = () => {
     try {
       await login(email, password);
       showToast('success', language === 'bn' ? 'সফলভাবে লগিন হয়েছে।' : 'Signed in successfully.');
-    } catch (err: any) {
-      showToast('error', err.message || 'Login failed. Please check your credentials.');
+    } catch (err: unknown) {
+      showToast('error', getErrorMessage(err, 'Login failed. Please check your credentials.'));
     } finally {
       setLoading(false);
     }
@@ -46,8 +47,8 @@ export const AuthScreen: React.FC = () => {
     try {
       await login(demoEmail, demoPassword);
       showToast('success', language === 'bn' ? 'সফলভাবে লগিন হয়েছে।' : 'Signed in successfully.');
-    } catch (err: any) {
-      showToast('error', err.message || 'Demo login failed.');
+    } catch (err: unknown) {
+      showToast('error', getErrorMessage(err, 'Demo login failed.'));
     } finally {
       setLoading(false);
     }
@@ -58,9 +59,10 @@ export const AuthScreen: React.FC = () => {
     try {
       await loginWithGoogle();
       showToast('success', language === 'bn' ? 'সফলভাবে লগিন হয়েছে।' : 'Signed in successfully.');
-    } catch (err: any) {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        showToast('error', err.message || 'Google sign-in failed.');
+    } catch (err: unknown) {
+      const { code } = getErrorDetails(err);
+      if (code !== 'auth/popup-closed-by-user') {
+        showToast('error', getErrorMessage(err, 'Google sign-in failed.'));
       }
     } finally {
       setSocialLoading(false);
@@ -72,9 +74,10 @@ export const AuthScreen: React.FC = () => {
     try {
       await loginWithGitHub();
       showToast('success', language === 'bn' ? 'সফলভাবে লগিন হয়েছে।' : 'Signed in successfully.');
-    } catch (err: any) {
-      if (err.code !== 'auth/popup-closed-by-user') {
-        showToast('error', err.message || 'GitHub sign-in failed.');
+    } catch (err: unknown) {
+      const { code } = getErrorDetails(err);
+      if (code !== 'auth/popup-closed-by-user') {
+        showToast('error', getErrorMessage(err, 'GitHub sign-in failed.'));
       }
     } finally {
       setSocialLoading(false);

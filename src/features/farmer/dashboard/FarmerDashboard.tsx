@@ -79,7 +79,7 @@ export const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ onNavigate }) 
       }
     }
     loadData();
-  }, [showToast]);
+  }, [language, showToast]);
 
   const handleTaskToggle = async (taskId: string) => {
     try {

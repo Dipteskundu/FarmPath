@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { tr } from "@/lib/localize";
 import {
-  Store,
-  CheckCircle2,
+  
+  
   AlertTriangle,
   Search,
-  Filter,
+  
   Eye,
   Check,
-  X,
-  TrendingUp,
-  Tag,
-  Scale,
+  
+  
+  
+  
   MapPin,
   RefreshCw,
 } from '@/components/icons';
-import { Card, CardHeader } from '@/components/ui/Card';
+import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -32,11 +32,7 @@ export const MarketplaceManagement: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('All');
   const [selectedListing, setSelectedListing] = useState<MarketplaceListingAdminView | null>(null);
 
-  useEffect(() => {
-    loadListings();
-  }, []);
-
-  const loadListings = async () => {
+  const loadListings = useCallback(async () => {
     try {
       setLoading(true);
       const res = await getMarketplaceListingsAdmin();
@@ -48,7 +44,12 @@ export const MarketplaceManagement: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => void loadListings(), 0);
+    return () => window.clearTimeout(timer);
+  }, [loadListings]);
 
   const handleStatusChange = async (id: string, status: MarketplaceListingAdminView['status']) => {
     try {
