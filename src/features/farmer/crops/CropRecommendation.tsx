@@ -11,10 +11,8 @@ import {
   
 } from '@/components/icons';
 import { Card, CardHeader } from '@/components/ui/Card';
-import {  } from '@/components/ui/';
 import { Button } from '@/components/ui/Button';
 import { FormInput, FormSelect } from '@/components/ui/FormInput';
-import {  } from '@/components/ui/';
 import { useToast } from '@/components/ui/Toast';
 import { getCropRecommendations } from '@/lib/farmerApi';
 import { CropRecommendationItem, CropRecommendationInput } from '@/types';

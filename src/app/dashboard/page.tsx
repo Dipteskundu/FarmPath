@@ -5,7 +5,6 @@ import { FarmerDashboard } from "@/features/farmer/dashboard";
 import { AdminDashboard } from "@/features/admin/dashboard";
 import { useAuth } from "@/contexts/AuthContext";
 import { getRoute } from "@/features/layout/navConfig";
-import {  } from "@/types";
 
 function MarketplaceDashboard({ onNavigate }: { onNavigate: (key: string) => void }) {
   return (

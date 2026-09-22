@@ -13,7 +13,6 @@ import {
   Sparkles,
   
 } from '@/components/icons';
-import {  } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';

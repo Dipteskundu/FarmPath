@@ -10,9 +10,7 @@ import {
   Users,
   Check,
 } from '@/components/icons';
-import {  } from '@/components/ui/';
 import { Badge } from '@/components/ui/Badge';
-import {  } from '@/components/ui/';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useToast } from '@/components/ui/Toast';
 import { getCropComparisonProfiles } from '@/lib/farmerApi';
