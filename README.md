@@ -86,16 +86,38 @@ FarmPath/
 ├── public/                  # Frontend static assets
 ├── src/                     # Next.js frontend source code
 ├── .gitignore
+├── AGENTS.md
+├── CHANGELOG.md
+├── HowToSetup.md
 ├── README.md
+├── env.example
 ├── eslint.config.mjs
 ├── next.config.ts
 ├── package.json
 ├── package-lock.json
 ├── postcss.config.mjs
 ├── render.yaml
+├── schema.md
+├── seed.md
 ├── tsconfig.json
 └── vercel.json
 ```
+### Project Documentation
+
+The following documents provide setup instructions, development guidelines, database references, and project updates.
+
+| Document | Description |
+|---|---|
+| [HowToSetup.md](./HowToSetup.md) | Step-by-step instructions for setting up and running the project locally. |
+| [AGENTS.md](./AGENTS.md) | Project-specific guidelines and instructions for AI coding agents and contributors. |
+| [CHANGELOG.md](./CHANGELOG.md) | Records notable project changes, improvements, and updates. |
+| [schema.md](./schema.md) | Documents the logical database schema and entities represented in the ER diagram. |
+| [seed.md](./seed.md) | Directs developers to the existing backend database seeding implementation. |
+| [env.example](./env.example) | Reference for the environment variables required by the project. |
+
+For database implementation details, refer to the Mongoose models in `AgriNova-Server/src/`.
+
+For database seeding, refer to the existing implementation in [`AgriNova-Server/src/database/seed/`](https://github.com/Dipteskundu/AgriNova/tree/main/AgriNova-Server/src/database/seed).
 
 ### Component Overview
 
@@ -244,6 +266,16 @@ Contains model evaluation results, metrics, and generated figures.
   Frontend Hosting                    Vercel
 
   Backend and AI Hosting              Render
+
+  ### Database Documentation
+
+FarmPath uses MongoDB with Mongoose for application data management.
+
+For additional database references:
+
+- **Database Schema:** See [schema.md](./schema.md).
+- **Database Seeding:** See [seed.md](./seed.md).
+- **Seed Implementation:** See [`AgriNova-Server/src/database/seed/`](https://github.com/Dipteskundu/AgriNova/tree/main/AgriNova-Server/src/database/seed).
   -----------------------------------------------------------------------
 
 ------------------------------------------------------------------------
