@@ -1,614 +1,565 @@
-# FarmPath Platform - Vercel Deployment Guide
+# AgriNova AI --- Smart Agriculture & Farm-to-Market Platform
 
-This README provides step-by-step instructions for deploying the FarmPath Smart Agriculture & Farm-to-Market Platform to Vercel, covering both the frontend (Next.js) and backend (Node.js/Express) components.
+AgriNova AI is the intelligent agriculture component of the **AgriNova
+Smart Agriculture & Farm-to-Market Platform**. It provides crop
+recommendations, fertilizer guidance, weather information, and
+agricultural decision support, with a focus on Bangladesh's agricultural
+conditions.
 
-## 📋 Prerequisites
+The platform combines a Next.js frontend, a Node.js/Express application
+backend, and a Python FastAPI AI microservice.
 
-### Frontend Requirements
-- Node.js 20.x or higher
-- npm or yarn
-- Vercel account (free tier available)
-- Firebase project configured (already set up)
+------------------------------------------------------------------------
 
-### Backend Requirements
-- Node.js 20.x or higher
-- MongoDB (local or Atlas cloud database)
- npm account
- Vercel account
+## Live Application
 
-### Environment Variables Needed
+> **Important --- Wake up the AI service before opening the
+> application.**
+>
+> The AI service is hosted on Render and may be idle when it has not
+> received requests recently. **First, open the AI health-check link
+> below and wait for a successful response.** This request wakes the
+> service if it is sleeping. Once the health endpoint responds, open the
+> AgriNova application.
 
-#### Frontend (.env.local)
-Create in the `FarmPath/` directory:
-```env
-# Backend API URL (local backend runs on port 5000, see FarmPath-Server/.env)
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+### Step 1 --- Activate the AI service
 
-# Firebase Configuration (from FarmPath/.env.local)
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=mentro-71aca.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=mentro-71aca
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=mentro-71aca.firebasestorage.app
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=756461169079
-NEXT_PUBLIC_FIREBASE_APP_ID=1:756461169079:web:f01c3212d61cf9ef0be032
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-MZPMFEK4QM
+**[Open AgriNova AI Health
+Check](https://agrinova-ai-service.onrender.com/health)**
 
-# Stripe Configuration
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_placeholder
+Wait for the health-check response before continuing. The first request
+may take a little while if the service needs to start.
+
+### Step 2 --- Open the live application
+
+**[Launch AgriNova --- Live Platform](https://farmpath.vercel.app/)**
+
+### Deployed Services
+
+  -------------------------------------------------------------------------------------
+  Component                           Live URL
+  ----------------------------------- -------------------------------------------------
+  Frontend --- Next.js                https://farmpath.vercel.app/
+
+  Main Backend --- Node.js/Express    https://agrinova-backend1.onrender.com
+
+  Main Backend API Documentation      https://agrinova-backend1.onrender.com/docs/#/
+
+  AI Microservice --- FastAPI         https://agrinova-ai-service.onrender.com
+
+  AI Microservice API Documentation   https://agrinova-ai-service.onrender.com/docs
+
+  AI Health Check                     https://agrinova-ai-service.onrender.com/health
+  -------------------------------------------------------------------------------------
+
+
+## Architecture
+
+The FarmPath platform is organized into three main components: a Next.js frontend, a Node.js/Express backend, and a Python FastAPI AI microservice.
+
+### Repository Structure
+
+```text
+FarmPath/
+│
+├── AgriNova-AI/
+│   ├── ai-service/          # Python FastAPI AI microservice
+│   ├── backend/             # Separate Node.js AI backend
+│   ├── docs/                # AI documentation and API references
+│   ├── reports/             # Model evaluation reports and figures
+│   ├── .gitignore
+│   └── README.md
+│
+├── AgriNova-Server/
+│   ├── api/                 # Serverless API entry point
+│   ├── scripts/             # Backend utility scripts
+│   ├── src/                 # Main Express backend source
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── README.md
+│   ├── eslint.config.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── server.js
+│   └── vercel.json
+│
+├── public/                  # Frontend static assets
+├── src/                     # Next.js frontend source code
+├── .gitignore
+├── README.md
+├── eslint.config.mjs
+├── next.config.ts
+├── package.json
+├── package-lock.json
+├── postcss.config.mjs
+├── render.yaml
+├── tsconfig.json
+└── vercel.json
 ```
 
-#### Backend (.env)
-Create in the `FarmPath-Server/` directory:
-```env
-# Server Configuration
+### Component Overview
+
+- **`src/`** — Next.js frontend application, including pages, components, and user interface functionality.
+- **`public/`** — Static assets used by the frontend.
+- **`AgriNova-Server/`** — Main Node.js/Express backend responsible for authentication, database operations, platform APIs, and business logic.
+- **`AgriNova-AI/ai-service/`** — Python FastAPI microservice responsible for crop prediction, agricultural recommendations, fertilizer guidance, and weather integration.
+- **`AgriNova-AI/backend/`** — Separate Node.js AI API with its own authentication, routes, and recommendation-history functionality.
+- **`AgriNova-AI/docs/`** — AI API references, model methodology, and technical documentation.
+- **`AgriNova-AI/reports/`** — Model evaluation results, performance metrics, and generated figures.
+
+### System Architecture
+
+```text
+                 Next.js Frontend
+                    (src/)
+                      |
+                      v
+              AgriNova-Server
+             Node.js / Express
+                      |
+                      v
+               AgriNova-AI
+                      |
+                      v
+             ai-service (FastAPI)
+                      |
+          +-----------+-----------+
+          |           |           |
+          v           v           v
+       Crop       Bangladesh     BARC Crop
+    Prediction      Crop         Zoning &
+      Model        Catalog       Fertilizer
+                   & Seasons     Guidance
+                      |
+                      v
+              Open-Meteo Weather
+                   Service
+                      |
+                      v
+          Agricultural Recommendations
+                      |
+                      v
+               Main Backend
+                      |
+                      v
+               Next.js Frontend
+```
+
+The main application backend communicates with the Python AI microservice through the `AI_SERVICE_URL` environment variable.
+ Its local default is:
+
+``` env
+AI_SERVICE_URL=http://127.0.0.1:8000
+```
+
+In the deployed environment, configure it to use the hosted AI service
+URL.
+
+------------------------------------------------------------------------
+
+## Project Components
+
+The AgriNova ecosystem contains the following main components:
+
+### 1. `ai-service/` --- Python AI Microservice
+
+The FastAPI service is responsible for AI-powered agricultural
+recommendations and related data processing.
+
+It includes:
+
+-   Crop prediction model.
+-   Bangladesh crop catalog and season engine.
+-   BARC-based crop zoning and fertilizer guidance.
+-   Open-Meteo weather integration.
+-   Recommendation logic and supporting agricultural data.
+-   API endpoints, tests, and model-loading utilities.
+
+### 2. `AgriNova-Server/` --- Main Platform Backend
+
+The main Node.js/Express backend provides the platform's application
+APIs and connects the frontend to the platform's data and services.
+
+Its responsibilities include:
+
+-   Authentication and user management.
+-   Role-based access control.
+-   Farm, field, crop, and crop-cycle management.
+-   Harvest and quality-verification workflows.
+-   Marketplace, demands, and farmer-buyer matching.
+-   Orders, payments, and deliveries.
+-   Expenses, notifications, and administrative operations.
+-   Weather and AI-service integrations.
+
+### 3. `backend/` --- Optional AI Node.js Backend
+
+This is a separate Node.js/Express AI API service included in the
+AgriNova AI repository. It has its own routes, authentication
+middleware, and recommendation-history models.
+
+It is **not** the main platform backend. Run it independently only when
+its specific endpoints or recommendation-history functionality are
+required.
+
+### 4. `docs/` --- Documentation
+
+Contains technical documentation, including:
+
+-   AI API reference.
+-   Model methodology.
+-   BARC integration.
+-   Fertilizer guidance.
+-   Weather engine documentation.
+-   Model documentation.
+
+### 5. `reports/` --- Evaluation Reports
+
+Contains model evaluation results, metrics, and generated figures.
+
+------------------------------------------------------------------------
+
+## Technology Stack
+
+  -----------------------------------------------------------------------
+  Layer                               Technologies
+  ----------------------------------- -----------------------------------
+  Frontend                            Next.js, React
+
+  Main Backend                        Node.js, Express.js
+
+  AI Microservice                     Python, FastAPI, Uvicorn
+
+  Database                            MongoDB, Mongoose
+
+  Authentication                      JWT
+
+  AI / Machine Learning               XGBoost and supporting Python ML
+                                      libraries
+
+  Agricultural Data                   Bangladesh crop catalog, BARC crop
+                                      zoning and fertilizer guidance
+
+  Weather                             Open-Meteo
+
+  Frontend Hosting                    Vercel
+
+  Backend and AI Hosting              Render
+  -----------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## Running the Project Locally
+
+### Prerequisites
+
+Install the following before running the services:
+
+-   Python 3.10 or a compatible version supported by
+    `ai-service/requirements.txt`.
+-   Node.js 18 or later for the Node.js services.
+-   npm.
+-   MongoDB, locally or through MongoDB Atlas, for services that persist
+    application data.
+-   Network access for live weather requests to Open-Meteo.
+
+### 1. Start the Python AI Microservice
+
+From the repository root, run:
+
+``` powershell
+cd AgriNova-AI/ai-service
+
+# Create a virtual environment
+python -m venv .venv
+
+# Activate the virtual environment (Windows PowerShell)
+.venv\Scripts\Activate.ps1
+
+# Install Python dependencies
+python -m pip install -r requirements.txt
+
+# Start the FastAPI service
+python -m uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+The AI service should now be available at:
+
+  Resource                        Local URL
+  ------------------------------- ----------------------------------
+  Health Check                    http://127.0.0.1:8000/health
+  Model Information               http://127.0.0.1:8000/model/info
+  Interactive API Documentation   http://127.0.0.1:8000/docs
+
+Keep this service running while the main backend needs AI
+recommendations.
+
+### 2. Configure and Start the Main Backend
+
+Open the main backend project (`AgriNova-Server`) and configure its
+environment variables.
+
+At minimum, set the AI service URL to the local FastAPI address:
+
+``` env
+AI_SERVICE_URL=http://127.0.0.1:8000
+```
+
+Use the main backend's own README and environment template for the
+complete database, authentication, storage, and deployment
+configuration.
+
+Install dependencies and start the backend using the scripts defined in
+that project. For the backend structure described in this repository,
+the usual commands are:
+
+``` bash
+npm install
+npm run dev
+```
+
+The backend's local port and health-check route depend on its own
+configuration.
+
+### 3. Start the Frontend
+
+Open the frontend project and follow its README for installation and
+environment configuration.
+
+Make sure the frontend API URL points to the locally running main
+backend. Then install dependencies and start the development server
+using the scripts defined by the frontend project.
+
+------------------------------------------------------------------------
+
+## Optional: Run the Separate AI Node.js Backend
+
+The `backend/` directory is an additional AI API service. It is not
+required when the main platform backend already handles the AI-service
+integration.
+
+To run it:
+
+``` bash
+cd AgriNova-AI/backend
+npm ci
+```
+
+Create a local `.env` file based on `.env.example`. Configure the
+required values, including:
+
+-   A strong `JWT_SECRET`.
+-   A valid MongoDB connection string.
+-   The correct `AI_SERVICE_URL`.
+
+Then start the service:
+
+``` bash
+npm start
+```
+
+**Security:** Never use an example JWT secret in a deployed environment.
+Do not commit real `.env` files, credentials, API keys, or database
+connection strings.
+
+------------------------------------------------------------------------
+
+## Environment Configuration
+
+### Main Backend
+
+The main backend uses its own environment file. The following variables
+are described in its configuration:
+
+``` env
 PORT=5000
-NODE_ENV=production
+NODE_ENV=development
 
 # MongoDB
-MONGODB_URI=mongodb+srv://USER:PASSWORD@your-cluster.mongodb.net/?appName=Farmpath
+MONGODB_URI=mongodb://localhost:27017/agrinova
 
-# JWT Authentication
+# JWT
 JWT_SECRET=your_jwt_secret_here
 JWT_EXPIRE=30d
 
-# Frontend URL
-FRONTEND_URL=https://your-frontend.vercel.app
+# Python FastAPI AI service
+AI_SERVICE_URL=http://127.0.0.1:8000
 
-# External Services
-WEATHER_API_KEY=your_weather_api_key
-PAYMENT_GATEWAY_KEY=your_payment_gateway_key
-AI_API_KEY=your_ai_api_key
-CLOUD_STORAGE_BUCKET=your_cloud_storage_bucket
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+# Frontend
+FRONTEND_URL=http://localhost:3000
+
+# Public API origin for uploaded-photo URLs
+PUBLIC_API_URL=
+
+# Cloudinary photo uploads
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+# Hourly escrow auto-release
+CRON_SECRET=
+
+# Optional external services
+WEATHER_API_KEY=
+PAYMENT_GATEWAY_KEY=
+AI_API_KEY=
+CLOUD_STORAGE_BUCKET=
 ```
 
-## 🚀 Frontend Deployment on Vercel
+Use the actual environment-variable names and requirements in each
+service's `.env.example` or README. Values above are configuration
+examples, not production credentials.
 
-### Step 1: Prepare the Frontend
+### Production Deployment Values
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd FarmPath
-   ```
+Configure the following service URLs in the appropriate hosting
+environment:
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+``` env
+# Main backend environment
+AI_SERVICE_URL=https://agrinova-ai-service.onrender.com
+FRONTEND_URL=https://farmpath.vercel.app
 
-3. Build the frontend:
-   ```bash
-   npm run build
-   ```
-
-4. Verify the build output exists:
-   ```bash
-   ls .next/
-   ```
-
-### Step 2: Deploy to Vercel
-
-#### Option A: Vercel Dashboard
-1. Log in to [Vercel](https://vercel.com)
-2. Click "New Project"
-3. Import your Git repository (or connect GitHub/GitLab/Bitbucket)
-4. Select the `FarmPath` directory
-5. Verify the framework detection: **Next.js**
-6. Set the following build and start settings:
-   - **Framework Preset**: Next.js (auto-detected)
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `.next`
-   - **Root Directory**: `.` (default)
-   - **Start Command**: `npm run start`
-   - **Node.js Version**: 20.x
-7. Click "Add Environment Variables" and add all variables from `.env.local`:
-   - `NEXT_PUBLIC_API_URL`
-   - `NEXT_PUBLIC_FIREBASE_API_KEY`
-   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-   - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-   - `NEXT_PUBLIC_FIREBASE_APP_ID`
-   - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
-   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-8. Click "Deploy"
-
-#### Option B: Vercel CLI
-1. Install Vercel CLI (if not already installed):
-   ```bash
-   npm i -g vercel
-   ```
-2. Log in:
-   ```bash
-   vercel login
-   ```
-3. Deploy:
-   ```bash
-   vercel --prod
-   ```
-4. Follow the prompts to set environment variables
-
-### Step 3: Verify Frontend Deployment
-
-1. Visit your Vercel URL (e.g., `https://farmpath.vercel.app`)
-2. Verify the home page loads correctly
-3. Test authentication flow (login/register)
-4. Check Firebase integration is working
-5. Verify API calls to the backend
-
-## 🚀 Backend Deployment on Vercel
-
-### Step 1: Prepare the Backend
-
-1. Navigate to the backend directory:
-   ```bash
-   cd FarmPath-Server
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Verify the server starts locally:
-   ```bash
-   npm run dev
-   ```
-   - Server should start on port 5000
-   - Health check: `http://localhost:5000/api/health`
-
-### Step 2: Deploy to Vercel
-
-#### Option A: Vercel Serverless Functions
-
-1. In your Vercel dashboard, click "Add New" → "Project"
-2. Import the `FarmPath-Server` directory
-3. Configure settings:
-   - **Framework**: Node.js
-   - **Build Command**: `npm run build` (or leave empty if no build step)
-   - **Start Command**: `npm run start`
-   - **Node.js Version**: 20.x
-4. Add Environment Variables from `.env`:
-   - `PORT`
-   - `NODE_ENV`
-   - `MONGODB_URI`
-   - `JWT_SECRET`
-   - `JWT_EXPIRE`
-   - `FRONTEND_URL`
-   - `WEATHER_API_KEY`
-   - `PAYMENT_GATEWAY_KEY`
-   - `AI_API_KEY`
-   - `CLOUD_STORAGE_BUCKET`
-   - `CLOUDINARY_CLOUD_NAME`
-   - `CLOUDINARY_API_KEY`
-   - `CLOUDINARY_API_SECRET`
-5. Deploy
-
-#### Option B: Vercel CLI for Backend
-```bash
-vercel --prod
+# Frontend environment
+NEXT_PUBLIC_API_URL=https://agrinova-backend1.onrender.com/api
 ```
 
-### Step 3: Verify Backend Deployment
+Only add variables that the relevant service actually reads. After
+changing frontend environment variables on Vercel, redeploy the frontend
+for the changes to take effect.
 
-1. Visit the backend URL provided by Vercel (e.g., `https://farmpath-server.vercel.app`)
-2. Test the health endpoint: `https://your-backend.vercel.app/api/health`
-3. Test authentication endpoints:
-   - `POST /api/auth/register`
-   - `POST /api/auth/login`
-   - `GET /api/auth/me`
-4. Test CRUD operations for key resources:
-   - Farms: `GET/POST /api/farms`
-   - Fields: `GET/POST /api/fields`
-   - Crops: `GET/POST /api/crops`
-   - Orders: `GET/POST /api/orders`
+------------------------------------------------------------------------
 
-## 🔗 Frontend-Backend Integration
+## API Documentation
 
-After deploying both, ensure proper integration:
+Interactive API documentation is available for both deployed backend
+services.
 
-1. **Update API URL**: In Vercel dashboard, update `NEXT_PUBLIC_API_URL` to point to your deployed backend:
-   ```
-   NEXT_PUBLIC_API_URL=https://your-backend-url.vercel.app/api
-   ```
+### Main Platform Backend
 
-2. **Configure CORS**: The backend already has CORS configured. Verify the `FRONTEND_URL` environment variable matches your deployed frontend URL.
+-   **Base URL:** https://agrinova-backend1.onrender.com
+-   **API Documentation:** [Open Main Backend API
+    Docs](https://agrinova-backend1.onrender.com/docs/#/)
 
-3. **Test End-to-End**:
-   - Register a new user
-   - Login and obtain JWT token
-   - Create a farm
-   - Create a field
-   - Create a crop
-   - Place an order
-   - Process a payment
+### AI Microservice
 
-## 📁 Project Structure Summary
+-   **Base URL:** https://agrinova-ai-service.onrender.com
+-   **API Documentation:** [Open AI Service API
+    Docs](https://agrinova-ai-service.onrender.com/docs)
+-   **Health Check:** [Check AI Service
+    Status](https://agrinova-ai-service.onrender.com/health)
 
-### Frontend (FarmPath)
-```
-src/
-├── app/                    # App Router pages
-├── components/             # Reusable UI components
-├── features/               # Feature modules
-├── lib/                    # Utilities (api.ts, auth, utils, constants)
-├── services/               # API services
-├── types/                  # TypeScript types
-└── providers/              # React context providers
+------------------------------------------------------------------------
+
+## Testing
+
+### Python AI Service
+
+``` bash
+cd AgriNova-AI/ai-service
+python -m pytest tests -v
 ```
 
-### Backend (FarmPath-Server)
-```
-src/
-├── config/                 # Configuration (db.js, env.js, services.js)
-├── modules/                # Feature modules (25+ modules)
-├── middleware/             # Express middleware (auth, role, error, upload)
-├── database/               # MongoDB models and seeding
-├── app.js                  # Express app setup
-└── server.js               # Server entry point
+### Separate AI Node.js Backend
+
+``` bash
+cd AgriNova-AI/backend
+npm test
 ```
 
-## ⚠️ Common Issues & Troubleshooting
+Run the main platform backend's checks from `AgriNova-Server`, following
+that project's README.
 
-### 1. CORS Errors
-- **Symptom**: Frontend cannot fetch from backend
-- **Solution**: Verify `FRONTEND_URL` matches deployed frontend URL in `.env`
+------------------------------------------------------------------------
 
-### 2. Network Errors (fetch failed)
-- **Symptom**: `Failed to fetch` or network error
-- **Solution**: Check `NEXT_PUBLIC_API_URL` environment variable format (must include `http://` or `https://` and `/api` suffix)
+## Deployment Overview
 
-### 3. Firebase Errors
-- **Symptom**: Authentication or database errors
-- **Solution**: Ensure Firebase project settings allow the Vercel domain
-- **Check**: Firebase console → Project Settings → Web app settings
+The live platform is deployed as three separately hosted services:
 
-### 4. MongoDB Connection Errors
-- **Symptom**: Server fails to start or health check returns DB as "disconnected"
-- **Solution**: Verify `MONGODB_URI` is correct and Atlas IP access is enabled
+  ------------------------------------------------------------------------------------------
+  Service                 Hosting Provider        Deployment
+  ----------------------- ----------------------- ------------------------------------------
+  Next.js Frontend        Vercel                  https://farmpath.vercel.app/
 
-### 5. Build Failures
-- **Symptom**: Deployment build fails
-- **Solution**:
-  - Check Node.js version (should be 20.x)
-  - Verify all environment variables are set
-  - Run `npm run build` locally first to identify errors
+  Main Node.js/Express    Render                  https://agrinova-backend1.onrender.com
+  Backend                                         
 
-### 6. API Route Not Found
-- **Symptom**: 404 errors on API routes
-- **Solution**: Ensure backend is deployed and `NEXT_PUBLIC_API_URL` points to the correct URL
+  Python FastAPI AI       Render                  https://agrinova-ai-service.onrender.com
+  Microservice                                    
+  ------------------------------------------------------------------------------------------
 
-## 🧪 Post-Deployment Checklist
+### Deployment Integration Checklist
 
-### Frontend Verification
-- [ ] Home page loads at `https://your-frontend.vercel.app`
-- [ ] Authentication (login/register) works
-- [ ] Dashboard accessible after login
-- [ ] Firebase analytics working
-- [ ] Stripe payment integration (if tested)
-- [ ] Responsive design (mobile/desktop)
+-   [ ] Frontend environment points to the deployed main backend API.
+-   [ ] Main backend `AI_SERVICE_URL` points to the deployed FastAPI
+    service.
+-   [ ] Main backend CORS configuration allows the deployed frontend
+    origin.
+-   [ ] MongoDB connection string and database access are configured.
+-   [ ] Required authentication and storage environment variables are
+    configured.
+-   [ ] AI health endpoint responds successfully.
+-   [ ] Frontend can retrieve data from the main backend.
+-   [ ] Main backend can communicate with the AI microservice.
 
-### Backend Verification
-- [ ] Health check: `https://your-backend.vercel.app/api/health` returns `{"status":"ok"}`
-- [ ] Authentication endpoints work
-- [ ] CRUD operations for farms, fields, crops work
-- [ ] MongoDB connection stable
-- [ ] Rate limiting not exceeded
-- [ ] Error handling returns proper JSON format
+------------------------------------------------------------------------
 
-### Integration Verification
-- [ ] Frontend can call backend APIs
-- [ ] JWT tokens passed correctly in Authorization header
-- [ ] Role-based access control works
-- [ ] Weather API integration (if enabled)
-- [ ] Cold-chain logistics features working
+## Important Notes
 
-## 📋 Feature Implementation Status
+-   The checked-in model files allow the AI service to load an existing
+    trained model. Retraining is not required just to start the API.
+-   Training and evaluation scripts may take additional time and can
+    regenerate model artifacts.
+-   The hosted AI service may need time to wake up after a period of
+    inactivity. Open the health-check link before using the live
+    application.
+-   Weather responses depend on Open-Meteo availability and the
+    service's cache/fallback behavior.
+-   Model accuracy figures in the documentation are reported evaluation
+    results; they do not guarantee field performance or crop yield.
+-   Keep secrets and private environment files out of source control.
 
-### Frontend Features ✅ Implemented
+------------------------------------------------------------------------
 
-#### Public Pages
-- [x] Home page with 9-step journey overview
-- [x] About page
-- [x] Contact page
+## Troubleshooting
 
-#### Authentication
-- [x] Login page with email/password
-- [x] Registration page (Farmer, Buyer, Supplier roles)
-- [x] Forgot password page
-- [x] Social auth (Google, GitHub - placeholders)
+### AI features are unavailable
 
-#### Dashboard (Farmer)
-- [x] Overview with stats and 9-stage journey
-- [x] Farm management (CRUD operations)
-- [x] Field management (CRUD operations)
-- [x] Crop management with recommendations
-- [x] Harvest management
-- [x] Quality verification requests
-- [x] Marketplace (Input & Produce)
-- [x] Demand board
-- [x] Orders management
-- [x] Payments processing
-- [x] Expenses tracking
-- [x] Analytics dashboard
-- [x] Weather broadcast
-- [x] AI Assistant integration
+1.  Open the [AI Service Health
+    Check](https://agrinova-ai-service.onrender.com/health).
+2.  Wait for the service to respond successfully; a sleeping Render
+    service may take time to start.
+3.  Confirm the main backend's `AI_SERVICE_URL` is set to
+    `https://agrinova-ai-service.onrender.com`.
+4.  Open the [AI API
+    Documentation](https://agrinova-ai-service.onrender.com/docs) to
+    inspect the available endpoints.
 
-#### Dashboard (Buyer)
-- [x] Browse marketplace (produce & inputs)
-- [x] Post demands
-- [x] Orders management
-- [x] Deliveries tracking
-- [x] Payments processing
+### Frontend cannot connect to the backend
 
-#### Admin Dashboard
-- [x] User management
-- [x] Dataset management
-- [x] Product management
-- [x] Order management
-- [x] Quality verification
-- [x] Reports generation
-- [x] Settings
+-   Verify the frontend API base URL is correct.
+-   Confirm the backend is running and reachable.
+-   Check that the backend CORS configuration permits the frontend's
+    deployed origin.
+-   Check browser developer tools and backend logs for the failing
+    request.
 
-#### UI Components ✅
-- [x] Button (primary, secondary, outline, ghost, danger variants)
-- [x] Input (text, email, password, tel)
-- [x] Select (role selection)
-- [x] Card (farm cards, product cards)
-- [x] Modal (auth forms, modals)
-- [x] Table (data tables)
-- [x] Badge (status badges)
-- [x] Alert (error/success messages)
-- [x] Tabs (navigation tabs)
-- [x] Skeleton (loading states)
-- [x] Toast (notification messages)
-- [x] Theme Toggle (light/dark mode)
-- [x] Language Switcher (Bangla/English)
+### Backend cannot connect to MongoDB
 
-#### Layout Components ✅
-- [x] Header (public navbar, dashboard header)
-- [x] Sidebar (dashboard navigation)
-- [x] Footer (site footer)
-- [x] Dashboard Layout (main layout wrapper)
+-   Verify `MONGODB_URI`.
+-   Confirm the database credentials are correct.
+-   Check MongoDB Atlas network access settings if using Atlas.
 
-#### Features & Integrations ✅
-- [x] Firebase Analytics (initialized with measurement ID: G-MZPMFEK4QM)
-- [x] Firebase Authentication setup
-- [x] Firebase Storage configuration
-- [x] Stripe Payments (placeholder key: pk_test_placeholder)
-- [x] Multi-language support (Bangla + English)
-- [x] Responsive design (mobile-first)
-- [x] Tailwind CSS 4 styling
-- [x] Next.js 15 App Router
-- [x] React 19 components
-- [x] API client with auth token management
-- [x] Error handling and network error description
-- [x] Timeout handling (20s per request)
-- [x] CORS configuration
-- [x] Security headers (via vercel.json)
+### Local AI service does not start
 
-### Backend Features ✅ Implemented
+-   Confirm the Python version is compatible with `requirements.txt`.
+-   Activate the correct virtual environment.
+-   Reinstall dependencies if necessary.
+-   Check that port `8000` is not already in use.
+-   Review the terminal output for missing model files or configuration
+    errors.
 
-#### Authentication Module ✅
-- [x] User registration with role selection
-- [x] User login with JWT token generation
-- [x] User profile retrieval (GET /api/auth/me)
-- [x] Social authentication (Google, GitHub - placeholders)
-- [x] JWT authentication middleware
-- [x] Password hashing with bcryptjs
-- [x] Input validation with express-validator
+------------------------------------------------------------------------
 
-#### Farms CRUD ✅
-- [x] Create farm with complete details
-- [x] Get all farms (with pagination/filtering)
-- [x] Get single farm by ID
-- [x] Update farm information
-- [x] Delete farm
-- [x] Active fields count calculation
-- [x] Owner scoping (farm owner can only manage their own farms)
+## License
 
-#### Fields CRUD ✅
-- [x] Create field with soil and irrigation details
-- [x] Get all fields (with farm filtering)
-- [x] Get single field by ID
-- [x] Update field information
-- [x] Delete field
-- [x] Farm-wise field counting
-
-#### Crops CRUD + Recommendations ✅
-- [x] Create crop entry with variety and dates
-- [x] Get all crops (with filtering)
-- [x] Get single crop by ID
-- [x] Get crop recommendations (AI-powered)
-- [x] Crop cycle tracking
-- [x] Harvest lot association
-
-#### Harvest CRUD ✅
-- [x] Create harvest lot with photos and field data
-- [x] Get all harvests
-- [x] Get single harvest by ID
-- [x] Update harvest status
-- [x] Delete harvest
-- [x] 24-hour quality verification tracking
-
-#### Orders CRUD + Status Updates ✅
-- [x] Create order from marketplace
-- [x] Get all orders (with filtering)
-- [x] Get single order by ID
-- [x] Update order status (pending, confirmed, shipped, delivered, completed)
-- [x] Order tracking
-- [x] Payment integration placeholders
-
-#### Marketplace ✅
-- [x] Input products listing (for farmers/suppliers)
-- [x] Produce listings (for farmers)
-- [x] Create new produce listing
-- [x] Browse products with filters
-- [x] Product details view
-- [x] Search and sort functionality
-
-#### Demands CRUD ✅
-- [x] Create buyer demand
-- [x] Get all demands
-- [x] Get single demand by ID
-- [x] Update demand status
-- [x] Farmer-buyer matching
-
-#### Weather Integration ✅
-- [x] Weather API integration setup
-- [x] Weather data fetching
-- [x] Weather broadcast dashboard
-- [x] Weather alerts configuration
-
-#### Payments ✅
-- [x] Stripe payment integration (placeholder key)
-- [x] Payment intent creation (structure ready)
-- [x] Escrow-protected transaction flow (design implemented)
-- [x] Payment webhook endpoints (ready)
-
-#### Notifications ✅
-- [x] Notification system structure
-- [x] Audit logging for all CRUD operations
-- [x] Notification models and routes
-- [x] Delivery status notifications
-
-#### Expenses Tracking ✅
-- [x] Expense creation and tracking
-- [x] Expense categorization
-- [x] Farm-wise expense filtering
-- [x] Profitability calculation
-
-#### AI Assistant ✅
-- [x] AI service module structure
-- [x] Crop advisory service
-- [x] Training course modules
-- [x] Farmer progress tracking
-
-#### Admin Operations ✅
-- [x] User management (list, view, edit)
-- [x] Dataset management
-- [x] Product management
-- [x] Order management
-- [x] Quality verification management
-- [x] Reports generation
-- [x] Settings configuration
-
-#### Role-Based Access Control ✅
-- [x] JWT authentication middleware
-- [x] Role middleware (farmer, buyer, admin, supplier)
-- [x] Multiple role support
-- [x] Owner-based access control
-- [x] Admin-only routes
-
-#### Database Models ✅ (25+ Models Implemented)
-- [x] User - User accounts and profiles with role management
-- [x] Farm - Farm information with owner tracking
-- [x] Field - Field details with GPS coordinates
-- [x] Crop - Crop database with variety and planting dates
-- [x] CropCycle - Active crop cycles tracking
-- [x] Harvest - Harvest lots with quality verification
-- [x] QualityRequest - Quality verification requests
-- [x] Product - Marketplace products with pricing
-- [x] Demand - Buyer demands and requirements
-- [x] Order - Orders with status tracking
-- [x] Payment - Payments with transaction IDs
-- [x] Delivery - Deliveries with tracking information
-- [x] Expense - Expense tracking with categories
-- [x] Notification - Notifications system
-- [x] AuditLog - Audit trail for all operations
-- [x] Dispute - Dispute management
-- [x] MarketPrice - Market price tracking
-- [x] Advisory - Crop advisory records
-- [x] WeatherAlert - Weather alerts and warnings
-- [x] Report - Generated reports
-- [x] TrainingCourse - Available training courses
-- [x] TrainingProgress - Farmer training progress
-- [x] FarmVerification - Farm verification status
-
-#### API Endpoints ✅
-- [x] Authentication endpoints (register, login, me, social)
-- [x] Farms CRUD endpoints
-- [x] Fields CRUD endpoints
-- [x] Crops CRUD + recommendation endpoints
-- [x] Harvest CRUD endpoints
-- [x] Orders CRUD + status update endpoints
-- [x] Marketplace input/product endpoints
-- [x] Demands CRUD endpoints
-- [x] Weather data endpoints
-- [x] Payments endpoints
-- [x] Notifications endpoints
-- [x] Expenses endpoints
-- [x] Admin endpoints
-- [x] AI Assistant endpoints
-
-#### Middleware ✅
-- [x] JWT authentication middleware
-- [x] Role-based access middleware
-- [x] Error handling middleware
-- [x] File upload middleware (multer)
-- [x] Request sanitization middleware
-
-#### Utility Functions ✅
-- [x] Date utilities (today(), format functions)
-- [x] Audit logging utility
-- [x] Database connection with retry logic
-- [x] Response formatting helpers
-
-### DevOps & Configuration ✅
-
-#### Environment Configuration ✅
-- [x] Frontend .env.local with all required variables
-- [x] Backend .env with all required variables
-- [x] Vercel environment variable configuration
-- [x] MongoDB Atlas connection setup
-
-#### Scripts & Commands ✅
-- [x] Frontend: dev, build, start, lint
-- [x] Backend: dev, start, seed, lint
-- [x] Database seeding with reference data
-
-#### Security ✅
-- [x] Security headers (via vercel.json)
-- [x] CORS configuration
-- [x] Helmet.js not used but headers configured
-- [x] X-Content-Type-Options: nosniff
-- [x] X-Frame-Options: DENY/SAMEROOT
-- [x] X-XSS-Protection: 1; mode=block
-- [x] Referrer-Policy: strict-origin-when-cross-origin
-- [x] No-store cache headers on API routes
-
-#### Vercel Deployment ✅
-- [x] Frontend vercel.json configured (Next.js 15)
-- [x] Backend environment variables configured
-- [x] Security headers implemented
-- [x] API caching configuration (no-store)
-- [x] Redirects and rewrites configured
-- [x] Environment variable forwarding
-
-### Known Placeholders ⚠️
-- [ ] Stripe: pk_test_placeholder - Replace with live key for production payments
-- [ ] Firebase: Some config values are placeholders - Verify in Firebase console
-- [ ] MongoDB: Connection string needs production credentials
-- [ ] Cloudinary: API credentials need to be set for file uploads
-- [ ] Weather API: Key needs to be obtained from weather provider
-- [ ] Payment gateway: Key needs to be obtained from payment provider
-
----
-
-*Last Updated: 2026-10-04*
-*FarmPath Smart Agriculture & Farm-to-Market Platform*
-*Frontend: FarmPath (Next.js 15, React 19, Tailwind CSS 4)*
-*Backend: FarmPath-Server (Express.js, MongoDB, Mongoose)*
-
-- **Vercel Documentation**: https://vercel.com/docs
-- **Next.js Documentation**: https://nextjs.org/docs
-- **MongoDB Atlas**: https://www.mongodb.com/docs/atlas/
-- **Project Issues**: Check the `.env` files for correct variable names
-- **Community**: Vercel Discord, Next.js Discord, Stack Overflow
-
----
-
-*Generated for FarmPath Smart Agriculture & Farm-to-Market Platform*
-*Deployment Date: 2026-10-04*
+Add the applicable project license here if the repository has one.
