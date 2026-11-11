@@ -592,6 +592,3 @@ The live platform is deployed as three separately hosted services:
 
 ------------------------------------------------------------------------
 
-## License
-
-Add the applicable project license here if the repository has one.
