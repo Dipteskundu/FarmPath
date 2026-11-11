@@ -1,6 +1,6 @@
-# AgriNova AI --- Smart Agriculture & Farm-to-Market Platform
+# FarmPath --- Smart Agriculture & Farm-to-Market Platform
 
-AgriNova AI is the intelligent agriculture component of the **AgriNova
+Farmpath AI is the intelligent agriculture component of the **Farmpath
 Smart Agriculture & Farm-to-Market Platform**. It provides crop
 recommendations, fertilizer guidance, weather information, and
 agricultural decision support, with a focus on Bangladesh's agricultural
@@ -20,11 +20,11 @@ backend, and a Python FastAPI AI microservice.
 > received requests recently. **First, open the AI health-check link
 > below and wait for a successful response.** This request wakes the
 > service if it is sleeping. Once the health endpoint responds, open the
-> AgriNova application.
+> Farmpath application.
 
 ### Step 1 --- Activate the AI service
 
-**[Open AgriNova AI Health
+**[Open Farmpath AI Health
 Check](https://agrinova-ai-service.onrender.com/health)**
 
 Wait for the health-check response before continuing. The first request
@@ -32,7 +32,7 @@ may take a little while if the service needs to start.
 
 ### Step 2 --- Open the live application
 
-**[Launch AgriNova --- Live Platform](https://farmpath.vercel.app/)**
+**[Launch Farmpath --- Live Platform](https://farmpath.vercel.app/)**
 
 ### Deployed Services
 
@@ -159,7 +159,7 @@ URL.
 
 ## Project Components
 
-The AgriNova ecosystem contains the following main components:
+The Farmpath ecosystem contains the following main components:
 
 ### 1. `ai-service/` --- Python AI Microservice
 
